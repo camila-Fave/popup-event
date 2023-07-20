@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>popup</title>
+    <style>
+        .pop {margin:0 auto; min-width:320px;}
+        .pop .title {margin:10px 0; font-size:25px; font-weight:600; text-align:center;}
+        .pop p {line-height:20px; font-size:14px;}
+
+        .popup{
+            position: fixed;width: 100%;height: 100%;
+
+        }
+        .popup .pop{display: none; position: absolute;}
+        .popup .pop.pop00{bottom: 330px;right: 5vw;}
+        .popup .pop.pop24{bottom: 100px;right: 5vw;}
+        .popup .pop.pop.popCookie{bottom: 100px;left:5vw;}
+        .pop .layerBox {position: relative; padding:30px; box-sizing: border-box; background:#fff; border-radius:12px;box-shadow: 0px 10px 30px #00000050;}
+        .pop .layerBox .title {margin-bottom:10px; padding-bottom:10px; font-weight:600; border-bottom:1px solid #d9d9d9; text-align: left;}
+        .pop .layerBox .cont {margin-bottom:40px;}
+        .pop .layerBox p {line-height:20px; font-size:13px;}
+        .pop .layerBox .btnClose {display:inline-block; position:absolute; right:30px; top:40px; padding:6px 12px; color:#444; font-size:12px; text-decoration:underline;}
+        .pop .layerBox .btnTodayHide {font-size:13px; font-weight:600;}
+     
+    </style>
+</head>
+<body>
+    <div class="popup">
+        <div id="pop00" class="pop pop00">
+            <div class="layerBox">
+                <h1 class="title">🗳 로컬스토리지</h1>
+                <div class="cont">
+                    <p>클릭시 자정 이후에 다시 나오게 됩니다</p>
+                </div>
+                <div class="close">
+                    <span id="check" class="btnTodayHide"><input type="checkbox" value="checkbox" name="chkbox" id="chkday"/><label for="chkday">오늘 하루동안 보지 않기</label></span>
+                    <span id="close00" class="btnClose"> <a href="#0">Close</a></span>
+                </div>
+            </div>
+        </div>
+        <div id="pop24" class="pop pop24">
+            <div class="layerBox">
+                <h1 class="title">🗳 로컬스토리지</h1>
+                <div class="cont">
+                    <p>클릭시 24시간 뒤에 나오게 됩니다</p>
+                </div>
+                <div class="close">
+                    <span id="check" class="btnTodayHide"><input type="checkbox" value="checkbox" name="chkbox" id="chkday"/><label for="chkday">오늘 하루동안 보지 않기</label></span>
+                    <span id="close24" class="btnClose"> <a href="#0">Close</a></span>
+                </div>
+            </div>
+        </div>
+
+        <div id="popCookie" class="pop popCookie">
+            <div class="layerBox">
+                <h1 class="title">🍪 쿠키</h1>
+                <div class="cont">
+                    <p>클릭시 24시간 뒤에 나오게 됩니다</p>
+                </div>
+                <div class="close">
+                    <span id="check" class="btnTodayHide"><input type="checkbox" value="checkbox" name="chkbox" id="chkday"/><label for="chkday">오늘 하루동안 보지 않기</label></span>
+                    <span id="closeCookie" class="btnClose"> <a href="#0">Close</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="contents">
+        <h1 class="title">팝업 페이지</h1>
+        <p>
+            lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+        </p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+    <script>
+        function getLocalValue(key) {
+            let item = localStorage.getItem(key);
+            if (item) {
+                let data = JSON.parse(item);
+                return data;
+            }
+            return null;
+        }
+        function getCookie(key) {      
+            const value = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)'); 
+            return value? unescape(value[2]) : '';  
+        };
+
+        function setLocalValue00(key, value, extime,exmin,exscond) {
+        let expirationDate = new Date();
+        expirationDate.setHours( expirationDate.getHours() + extime);
+        expirationDate.setMinutes(expirationDate.getMinutes() + exmin);
+        expirationDate.setSeconds(expirationDate.getSeconds() + exscond);
+
+            let data = {
+            value: value,
+            expirationDate: expirationDate.toUTCString()
+            };
+        
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+        function setLocalValue24(key, value,exmin) {
+            let expirationDate = new Date();
+            expirationDate.setDate(expirationDate.getDate() + exmin);
+            let data = {
+            value: value,
+            expirationDate: expirationDate.toUTCString()
+            };
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+        function setCookie (cname, cvalue, exdays) {
+            var todayDate = new Date();
+            todayDate.setTime(todayDate.getTime() + (exdays*24*60*60*1000)); 
+            var expires = "expires=" + todayDate.toUTCString();
+            document.cookie = cname + "=" + cvalue + "; " + expires;
+        }
+        
+        function removeLocalValue(key) {
+            localStorage.removeItem(key);
+        }
+
+        var lpopClose00 = function(){
+            let tDate = new Date();
+            if($("input[name='chkbox']").is(":checked") == true){
+                setLocalValue00("local00", "Y", 23-tDate.getHours(),59-tDate.getMinutes(),60-tDate.getSeconds());
+            }
+            $("#pop00").hide();
+        }
+        var lpopClose24 = function(){
+            if($("input[name='chkbox']").is(":checked") == true){
+                setLocalValue24("local24", "Y",1);
+            }
+            $("#pop24").hide();
+        }
+        var couponClose = function(){
+            if($("input[name='chkbox']").is(":checked") == true){
+                setCookie("cookie24","Y",1); 
+            }
+            $("#popCookie").hide();
+        }
+        $(document).ready(function(){
+            let localdata00 = getLocalValue("local00");
+            let localdata24 = getLocalValue("local24");
+
+            if(!localdata00 || !localdata2){
+                $("#pop00").show()
+                $("#pop24").show()
+            }
+            else{
+                let expire = new Date(localdata.expirationDate);
+                if (expire < new Date()){
+                    removeLocalValue("local00");
+                    removeLocalValue("local24");
+                    $("#pop00").show();
+                    $("#pop24").show();
+                    
+                }else{
+                    $("#pop00").hide();
+                    $("#pop24").hide();
+                }
+            }
+            
+            
+            $("#close00").click(function(){
+                lpopClose00();
+            });
+            $("#close24").click(function(){
+                lpopClose24();
+            });
+
+            //
+            let cookiedata = getCookie("cookie24")
+            if(cookiedata.indexOf("cookie24=Y")<0){
+                $("#popCookie").show();
+            }
+            else{
+                $("#popCookie").hide();
+            }
+            $("#closeCookie").click(function(){
+                couponClose();
+            });
+        });
+    </script>
+</body>
+</html>
