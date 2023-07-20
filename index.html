@@ -37,7 +37,7 @@
                 </div>
                 <div class="close">
                     <span id="check" class="btnTodayHide"><input type="checkbox" value="checkbox" name="chkbox" id="chkday"/><label for="chkday">오늘 하루동안 보지 않기</label></span>
-                    <span id="close00" class="btnClose"> <a href="">Close</a></span>
+                    <span id="close00" class="btnClose"> <a href="#0">Close</a></span>
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@
                 </div>
                 <div class="close">
                     <span id="check" class="btnTodayHide"><input type="checkbox" value="checkbox" name="chkbox" id="chkday"/><label for="chkday">오늘 하루동안 보지 않기</label></span>
-                    <span id="close24" class="btnClose"> <a href="">Close</a></span>
+                    <span id="close24" class="btnClose"> <a href="#1">Close</a></span>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="close">
                     <span id="check" class="btnTodayHide"><input type="checkbox" value="checkbox" name="chkbox" id="chkday"/><label for="chkday">오늘 하루동안 보지 않기</label></span>
-                    <span id="closeCookie" class="btnClose"> <a href="">Close</a></span>
+                    <span id="closeCookie" class="btnClose"> <a href="#2">Close</a></span>
                 </div>
             </div>
         </div>
@@ -86,12 +86,22 @@
             }
             return null;
         }
+       var getCookie = function (cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0; i<ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1);
+                if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
+            }
+            return "";
+        }
 
         function setLocalValue00(key, value, extime,exmin,exscond) {
         let expirationDate = new Date();
         expirationDate.setHours( expirationDate.getHours() + extime);
         expirationDate.setMinutes(expirationDate.getMinutes() + exmin);
-        expirationDate.setSeconds(expirationDate.getSeconds() - exscond);
+        expirationDate.setSeconds(expirationDate.getSeconds() + exscond);
 
             let data = {
             value: value,
@@ -123,7 +133,7 @@
         var lpopClose00 = function(){
             let tDate = new Date();
             if($("input[name='chkbox']").is(":checked") == true){
-                setLocalValue00("local00", "Y", 23-tDate.getHours(),60-tDate.getMinutes(),tDate.getSeconds());
+                setLocalValue00("local00", "Y", 23-tDate.getHours(),59-tDate.getMinutes(),60-tDate.getSeconds());
             }
             $("#pop00").hide();
         }
@@ -148,15 +158,17 @@
                 $("#pop24").show()
             }
             else{
-                let expire = new Date(localdata.expirationDate);
-                if (expire < new Date()){
+                let expire00 = new Date(localdata00.expirationDate);
+                let expire24 = new Date(localdata24.expirationDate);
+                if (expire00 < new Date()){
                     removeLocalValue("local00");
-                    removeLocalValue("local24");
                     $("#pop00").show();
-                    $("#pop24").show();
-                    
-                }else{
+                }else if(expire00 > new Date()){
                     $("#pop00").hide();
+                }else if(expire24 < new Date()){
+                    removeLocalValue("local24");
+                    $("#pop24").show();
+                }else if(expire24 > new Date()){
                     $("#pop24").hide();
                 }
             }
@@ -170,7 +182,7 @@
             });
 
             //
-            let cookiedata = document.cookie;
+            let cookiedata = getCookie("cookie24")
             if(cookiedata.indexOf("cookie24=Y")<0){
                 $("#popCookie").show();
             }
