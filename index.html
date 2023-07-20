@@ -86,10 +86,16 @@
             }
             return null;
         }
-        function getCookie(key) {      
-            const value = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)'); 
-            return value? unescape(value[2]) : '';  
-        };
+      var getCookie = function (cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0; i<ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1);
+                if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
+            }
+            return "";
+        }
 
         function setLocalValue00(key, value, extime,exmin,exscond) {
         let expirationDate = new Date();
