@@ -17,7 +17,6 @@
         .popup .pop{display: none; position: absolute;}
         .popup .pop.pop00{bottom: 330px;right: 5vw;}
         .popup .pop.pop24{bottom: 100px;right: 5vw;}
-        .popup .pop.pop.popCookie{bottom: 100px;left:5vw;}
         .pop .layerBox {position: relative; padding:30px; box-sizing: border-box; background:#fff; border-radius:12px;box-shadow: 0px 10px 30px #00000050;}
         .pop .layerBox .title {margin-bottom:10px; padding-bottom:10px; font-weight:600; border-bottom:1px solid #d9d9d9; text-align: left;}
         .pop .layerBox .cont {margin-bottom:40px;}
@@ -31,7 +30,7 @@
     <div class="popup">
         <div id="pop00" class="pop pop00">
             <div class="layerBox">
-                <h1 class="title">🗳 로컬스토리지</h1>
+                <h1 class="title">⏰ 오늘 하루 </h1>
                 <div class="cont">
                     <p>클릭시 자정 이후에 다시 나오게 됩니다</p>
                 </div>
@@ -43,7 +42,7 @@
         </div>
         <div id="pop24" class="pop pop24">
             <div class="layerBox">
-                <h1 class="title">🗳 로컬스토리지</h1>
+                <h1 class="title">🗳 24시간 후 </h1>
                 <div class="cont">
                     <p>클릭시 24시간 뒤에 나오게 됩니다</p>
                 </div>
@@ -54,18 +53,6 @@
             </div>
         </div>
 
-        <div id="popCookie" class="pop popCookie">
-            <div class="layerBox">
-                <h1 class="title">🍪 쿠키</h1>
-                <div class="cont">
-                    <p>클릭시 24시간 뒤에 나오게 됩니다</p>
-                </div>
-                <div class="close">
-                    <span id="check" class="btnTodayHide"><input type="checkbox" value="checkbox" name="chkbox" id="chkday"/><label for="chkday">오늘 하루동안 보지 않기</label></span>
-                    <span id="closeCookie" class="btnClose"> <a href="#2">Close</a></span>
-                </div>
-            </div>
-        </div>
     </div>
 
 
@@ -85,16 +72,6 @@
                 return data;
             }
             return null;
-        }
-       var getCookie = function (cname) {
-            var name = cname + "=";
-            var ca = document.cookie.split(';');
-            for(var i=0; i<ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0)==' ') c = c.substring(1);
-                if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
-            }
-            return "";
         }
 
         function setLocalValue00(key, value, extime,exmin,exscond) {
@@ -119,12 +96,6 @@
             };
             localStorage.setItem(key, JSON.stringify(data));
         }
-        function setCookie (cname, cvalue, exdays) {
-            var todayDate = new Date();
-            todayDate.setTime(todayDate.getTime() + (exdays*24*60*60*1000)); 
-            var expires = "expires=" + todayDate.toUTCString();
-            document.cookie = cname + "=" + cvalue + "; " + expires;
-        }
         
         function removeLocalValue(key) {
             localStorage.removeItem(key);
@@ -143,32 +114,33 @@
             }
             $("#pop24").hide();
         }
-        var couponClose = function(){
-            if($("input[name='chkbox']").is(":checked") == true){
-                setCookie("cookie24","Y",1); 
-            }
-            $("#popCookie").hide();
-        }
+
         $(document).ready(function(){
             let localdata00 = getLocalValue("local00");
             let localdata24 = getLocalValue("local24");
 
-            if(!localdata00 || !localdata24){
+            if(!localdata00){
                 $("#pop00").show()
-                $("#pop24").show()
             }
             else{
                 let expire00 = new Date(localdata00.expirationDate);
-                let expire24 = new Date(localdata24.expirationDate);
                 if (expire00 < new Date()){
                     removeLocalValue("local00");
                     $("#pop00").show();
-                }else if(expire00 > new Date()){
+                }else{
                     $("#pop00").hide();
-                }else if(expire24 < new Date()){
+                }
+            }
+            //24
+            if(!localdata24){
+                $("#pop24").show()
+            }
+            else{
+                let expire24 = new Date(localdata24.expirationDate);
+                if (expire24 < new Date()){
                     removeLocalValue("local24");
                     $("#pop24").show();
-                }else if(expire24 > new Date()){
+                }else{
                     $("#pop24").hide();
                 }
             }
@@ -181,17 +153,7 @@
                 lpopClose24();
             });
 
-            //
-            let cookiedata = getCookie("cookie24")
-            if(cookiedata.indexOf("cookie24=Y")<0){
-                $("#popCookie").show();
-            }
-            else{
-                $("#popCookie").hide();
-            }
-            $("#closeCookie").click(function(){
-                couponClose();
-            });
+          
         });
     </script>
 </body>
