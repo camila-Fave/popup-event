@@ -37,7 +37,7 @@
                 </div>
                 <div class="close">
                     <span id="check" class="btnTodayHide"><input type="checkbox" value="checkbox" name="chkbox" id="chkday"/><label for="chkday">오늘 하루동안 보지 않기</label></span>
-                    <span id="close00" class="btnClose"> <a href="#0">Close</a></span>
+                    <span id="close00" class="btnClose"> <a href="">Close</a></span>
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@
                 </div>
                 <div class="close">
                     <span id="check" class="btnTodayHide"><input type="checkbox" value="checkbox" name="chkbox" id="chkday"/><label for="chkday">오늘 하루동안 보지 않기</label></span>
-                    <span id="close24" class="btnClose"> <a href="#0">Close</a></span>
+                    <span id="close24" class="btnClose"> <a href="">Close</a></span>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="close">
                     <span id="check" class="btnTodayHide"><input type="checkbox" value="checkbox" name="chkbox" id="chkday"/><label for="chkday">오늘 하루동안 보지 않기</label></span>
-                    <span id="closeCookie" class="btnClose"> <a href="#0">Close</a></span>
+                    <span id="closeCookie" class="btnClose"> <a href="">Close</a></span>
                 </div>
             </div>
         </div>
@@ -91,7 +91,7 @@
         let expirationDate = new Date();
         expirationDate.setHours( expirationDate.getHours() + extime);
         expirationDate.setMinutes(expirationDate.getMinutes() + exmin);
-        expirationDate.setSeconds(expirationDate.getSeconds() + exscond);
+        expirationDate.setSeconds(expirationDate.getSeconds() - exscond);
 
             let data = {
             value: value,
@@ -123,7 +123,7 @@
         var lpopClose00 = function(){
             let tDate = new Date();
             if($("input[name='chkbox']").is(":checked") == true){
-                setLocalValue00("local00", "Y", 23-tDate.getHours(),59-tDate.getMinutes(),60-tDate.getSeconds());
+                setLocalValue00("local00", "Y", 23-tDate.getHours(),60-tDate.getMinutes(),tDate.getSeconds());
             }
             $("#pop00").hide();
         }
